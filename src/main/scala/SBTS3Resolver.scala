@@ -85,9 +85,10 @@ object SbtS3Resolver extends AutoPlugin {
       def toHttps(region: String): String = {
         val bucketPath = url.stripPrefix("s3://")
         val euCentral = Region.EU_Frankfurt.toString
+        val correctedRegion = if(region == null) "us-east-1" else region
         region match {
-          case euCentral => s"""https://s3.${region}.amazonaws.com/${bucketPath}"""
-          case _ => s"""https://s3-${region}.amazonaws.com/${bucketPath}"""
+          case euCentral => s"""https://s3.${correctedRegion}.amazonaws.com/${bucketPath}"""
+          case _ => s"""https://s3-${correctedRegion}.amazonaws.com/${bucketPath}"""
         }
       }
     }
