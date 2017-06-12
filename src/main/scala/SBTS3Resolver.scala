@@ -83,10 +83,11 @@ object SbtS3Resolver extends AutoPlugin {
       // convenience method, to use normal bucket addresses with `at`
       // without this resolver: "foo" at s3("maven.bucket.com").toHttps(s3region.value)
       def toHttps(region: String): String = {
-
+        val bucketPath = url.stripPrefix("s3://")
+        val euCentral = Region.EU_Frankfurt.toString
         region match {
-          case Region.EU_Frankfurt.toString => s"""https://s3.${region}.amazonaws.com/${url.stripPrefix("s3://")}"""
-          case _ => s"""https://s3-${region}.amazonaws.com/${url.stripPrefix("s3://")}"""
+          case euCentral => s"""https://s3.${region}.amazonaws.com/${bucketPath}"""
+          case _ => s"""https://s3-${region}.amazonaws.com/${bucketPath}"""
         }
       }
     }
