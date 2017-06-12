@@ -1,7 +1,10 @@
 package ohnosequences.sbt
 
-import sbt._, Keys._
-import com.amazonaws.auth._, profile._
+import sbt._
+import Keys._
+import com.amazonaws.auth._
+import com.amazonaws.services.s3.model.Region
+import profile._
 
 object SbtS3Resolver extends AutoPlugin {
 
@@ -79,7 +82,13 @@ object SbtS3Resolver extends AutoPlugin {
 
       // convenience method, to use normal bucket addresses with `at`
       // without this resolver: "foo" at s3("maven.bucket.com").toHttps(s3region.value)
-      def toHttps(region: String): String = s"""https://s3.${region}.amazonaws.com/${url.stripPrefix("s3://")}"""
+      def toHttps(region: String): String = {
+
+        region match {
+          case Region.EU_Frankfurt.toString => s"""https://s3.${region}.amazonaws.com/${url.stripPrefix("s3://")}"""
+          case _ => s"""https://s3-${region}.amazonaws.com/${url.stripPrefix("s3://")}"""
+        }
+      }
     }
   }
   import autoImport._
