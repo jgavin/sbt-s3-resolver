@@ -79,7 +79,7 @@ object SbtS3Resolver extends AutoPlugin {
 
       // convenience method, to use normal bucket addresses with `at`
       // without this resolver: "foo" at s3("maven.bucket.com").toHttps(s3region.value)
-      def toHttps(region: String): String = s"""https://s3-${region}.amazonaws.com/${url.stripPrefix("s3://")}"""
+      def toHttps(region: String): String = s"""https://s3.${region}.amazonaws.com/${url.stripPrefix("s3://")}"""
     }
   }
   import autoImport._
