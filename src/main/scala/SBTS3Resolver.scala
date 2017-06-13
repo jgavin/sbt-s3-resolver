@@ -85,7 +85,14 @@ object SbtS3Resolver extends AutoPlugin {
       def toHttps(region: String): String = {
         val bucketPath = url.stripPrefix("s3://")
         val euCentral = Region.EU_Frankfurt.toString
+
+        //Correcting for fact that region enum resolves to null when provided US_STANDARD (us-east-1)
         val correctedRegion = if(region == null) "us-east-1" else region
+
+        /*
+        Constructing host name based on region name. Frankfurt host name must be constructed using s3.{region}
+        for java sdk to sign its request using the v4 signature method (Frankfurt only supports v4 signing)
+         */
         region match {
           case euCentral => s"""https://s3.${correctedRegion}.amazonaws.com/${bucketPath}"""
           case _ => s"""https://s3-${correctedRegion}.amazonaws.com/${bucketPath}"""
